@@ -2,15 +2,36 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<script th:src="@{/js/googleMap.js}"></script>
+<link th:href="@{/css/googleMap.css}" rel="stylesheet" type="text/css"/>
+<script th:src="@{/js/googleSpring.js}"></script>
+<script th:src="@{/js/googleModal.js}"></script>
 <title>GoogleMap Best Practice</title>
 </head>
 <body>
 	<p>Google Map 表示</p>
-	<div id="map" style="width: 620px; height: 400px"></div>
+	<div id="map" style="width: 620px; height: 600px"></div>
 	<p id="LatLngOnClick"></p>
+
+	<button type="button" id="button">Modal</button>
+
+	<div id="modal" class="modal">
+		<div class="modal-content">
+			<div class="modal-body">
+				<h1>Hello Modal</h1>
+				<form class="modal-form" th:action="@{/postMap}" method="post">
+					タイトル<input type="text" name="title">
+					緯度<input id="lat" type="text" name="lat">
+					経度<input id="lng" type="text" name="lng">
+					<input type="submit" value="送信">
+				</form>
+				<div class="button-wrap"><input type="button" id="closeBtn" value="Close"></div>
+			</div>
+		</div>
+	</div>
+	
 	<script
-		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDekF2nUeq0Hsswmv1-yjLjWWL9PXxkDfI&callback=initMap">
-	</script> <!-- src="{googlemapapiのurl}?key={自分のapikey}&callback={マップを表示するときに呼び出すcallback}" -->
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDekF2nUeq0Hsswmv1-yjLjWWL9PXxkDfI&callback=initMap">	
+	</script>
+	<!-- src="{googlemapapiのurl}?key={自分のapikey}&callback={マップを表示するときに呼び出すcallback}" -->
 </body>
 </html>
