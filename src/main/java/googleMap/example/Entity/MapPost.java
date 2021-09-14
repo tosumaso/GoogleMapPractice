@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name="map_post") //スネークケースでSQLのテーブルを定義する
 public class MapPost {
@@ -22,6 +24,7 @@ public class MapPost {
 	
 	@OneToOne
 	@JoinColumn(name="map_id", referencedColumnName="id")
+	@JsonBackReference
 	private Map map;
 	
 	public MapPost(String title) {

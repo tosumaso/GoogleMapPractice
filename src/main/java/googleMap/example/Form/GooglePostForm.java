@@ -25,6 +25,10 @@ public class GooglePostForm {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
+	public void setAll(Double lat, Double lng, String title) {
+		this.lat = lat;
+		this.lng = lng;
+		this.title = title;
+	}
 	
 }
