@@ -9,8 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 
 @Entity
 @Table(name="map")
@@ -27,7 +25,7 @@ public class Map {
 	private Double lng;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "map")
-	@JsonManagedReference
+	//@JsonManagedReference //entityをJsonに変えるとき外部参照先のentityを繰り返し参照しないように設定する(こちら側からは参照しない)
 	private MapPost post;
 	
 	public Map(Double lat, Double lng) {

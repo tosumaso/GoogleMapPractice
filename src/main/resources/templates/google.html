@@ -4,10 +4,16 @@
 <meta charset="UTF-8">
 <link th:href="@{/css/googleMap.css}" rel="stylesheet" type="text/css"/>
 <script th:src="@{/js/googleSpring.js}"></script>
-<script th:src="@{/js/googleModal.js}"></script>
 <title>GoogleMap Best Practice</title>
 </head>
 <body>
+	<div class="search-box">
+		<form>
+			<input id="keyword" type="text" name="keyword">
+			<input id="submit-keyword" type="submit" value="検索">
+		</form>
+	</div>
+	
 	<p>Google Map 表示</p>
 	<div id="map" style="width: 620px; height: 600px"></div>
 	<p id="LatLngOnClick"></p>

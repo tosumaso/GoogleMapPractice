@@ -1,5 +1,6 @@
-let japan //Jsのグローバルスコープに定義された変数はhtmlが読み込む別のJsファイルでも使える
-const locations = []
+let locations = [] //全てのマーカーの位置情報, //Jsのグローバルスコープに定義された変数はhtmlが読み込む別のJsファイルでも使える
+let markers = [] //markerオブジェクトの配列
+let results; //検索結果のmapオブジェクトを一時保存する
 
 function initMap() {
 	const mapEle = document.querySelector("#map");
@@ -14,7 +15,7 @@ function initMap() {
 
 	const map = new google.maps.Map(mapEle, mapOpt);
 
-	showCurrentMarkers();
+	showCurrentMarkers(locations); //全てのマーカーを表示する
 
 	map.addListener("click", (event) => {
 		showModal(event.latLng);
@@ -50,23 +51,32 @@ function initMap() {
 				data.forEach(d => {
 					locations.push(d);
 				})
-			}).then(()=> showCurrentMarkers()).catch(error => alert(error));
+			}).then(() => showCurrentMarkers(locations)).catch(error => alert(error));
 		}, 1000)
 	});
 
-	function showCurrentMarkers() { //既存のマーカーを表示
+	function showCurrentMarkers(places) { //全て or 検索結果のマーカーを表示(配列を引数にとり、表示対象に応じてマーカーを表示できる)
 		let currentWindow;
-		locations.map(m => { 
+
+		if (markers) { //マーカーがすでに立っていれば一度全てのマーカーを非表示にする
+			for (let i = 0; i < markers.length; i++) {
+				markers[i].setMap(null)
+			}
+		}
+
+		places.map(m => { //その後、マーカーを複数表示し、infoWindowを紐づかせる
 			const marker = new google.maps.Marker({
 				position: { lat: m.lat, lng: m.lng },
 				map: map
 			})
-			
+
+			markers.push(marker) //作成したマーカーをグローバルスコープで管理
+
 			marker.addListener("click", () => {
 				currentWindow && currentWindow.close();
-				const infoWindow = new google.maps.InfoWindow({ //Ajaxで受け取った配列に複数のレコードがが苦悩されており、外部参照先の値もJSで参照できる
-				content: `<a href="/getPostMap">${m.post.title}</a>` //JSファイル内なためthymeleafを使えない。
-			});
+				const infoWindow = new google.maps.InfoWindow({ //Ajaxで受け取った配列に複数のレコードが格納されており、外部参照先の値もJSで参照できる
+					content: `<a href="/getPostMap?id=${m.post.id}">${m.post.title}</a>` //JSファイル内なためthymeleafを使えない。
+				});
 				infoWindow.open({
 					anchor: marker,
 					map,
@@ -76,5 +86,25 @@ function initMap() {
 			})
 		})
 	}
+
+	const keyword = document.querySelector("#keyword");
+	const submitKeyword = document.querySelector("#submit-keyword");
+
+	submitKeyword.addEventListener("click", (e) => { //Postに含まれる単語でキーワード検索
+		e.preventDefault();
+		fetch(`search/?keyword=${keyword.value}`).then(response => {
+			if (response.ok) {
+				return response.json();
+			} else {
+				throw new Error("エラー");
+			}
+		}).then(data => {
+			data.forEach(d => {
+				results = locations.filter(location => location.id === d.id) //検索結果のmapを取得
+			})
+			showCurrentMarkers(results)
+		}).catch(error => alert(error));
+	})
+
 }
 
