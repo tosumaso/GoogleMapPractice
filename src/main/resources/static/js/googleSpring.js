@@ -1,6 +1,6 @@
 let locations = [] //全てのマーカーの位置情報, //Jsのグローバルスコープに定義された変数はhtmlが読み込む別のJsファイルでも使える
 let markers = [] //markerオブジェクトの配列
-let results; //検索結果のmapオブジェクトを一時保存する
+let results =[]; //検索結果のmapオブジェクトを一時保存する
 
 function initMap() {
 	const mapEle = document.querySelector("#map");
@@ -61,6 +61,7 @@ function initMap() {
 		if (markers) { //マーカーがすでに立っていれば一度全てのマーカーを非表示にする
 			for (let i = 0; i < markers.length; i++) {
 				markers[i].setMap(null)
+				results = [] //検索結果も空にしてリセットする
 			}
 		}
 
@@ -100,7 +101,8 @@ function initMap() {
 			}
 		}).then(data => {
 			data.forEach(d => {
-				results = locations.filter(location => location.id === d.id) //検索結果のmapを取得
+				const result = locations.filter(location => location.id === d.id); //検索結果のmapを取得
+				results.push(result[0]) 
 			})
 			showCurrentMarkers(results)
 		}).catch(error => alert(error));
